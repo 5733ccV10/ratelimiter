@@ -5,6 +5,7 @@ spring:
     password: ratelimiter
     driver-class-name: org.postgresql.Driver
   jpa:
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: validate   # Flyway owns schema, not Hibernate
     show-sql: false
@@ -12,5 +13,8 @@ spring:
       hibernate:
         jdbc:
           '[time_zone]': UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 server:
   port: 8080
