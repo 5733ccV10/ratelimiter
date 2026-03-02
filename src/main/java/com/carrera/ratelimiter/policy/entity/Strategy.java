@@ -1,4 +1,4 @@
-package com.carrera.ratelimiter.policy;
+package com.carrera.ratelimiter.policy.entity;
 
 public enum Strategy {
     FIXED_WINDOW,
