@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ratelimiter
+    url: jdbc:postgresql://localhost:5432/ratelimiter?TimeZone=UTC
     username: ratelimiter
     password: ratelimiter
     driver-class-name: org.postgresql.Driver
@@ -8,5 +8,9 @@ spring:
     hibernate:
       ddl-auto: validate   # Flyway owns schema, not Hibernate
     show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          '[time_zone]': UTC
 server:
   port: 8080
