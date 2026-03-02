@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    # Testcontainers will override this URL automatically at test runtime
+    url: jdbc:tc:postgresql:16:///ratelimiter
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate

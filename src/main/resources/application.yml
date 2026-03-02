@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ratelimiter
+    username: ratelimiter
+    password: ratelimiter
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Flyway owns schema, not Hibernate
+    show-sql: false
+server:
+  port: 8080
