@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+implementation-guide.md
+tdd.md
