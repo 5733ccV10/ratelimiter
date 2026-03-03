@@ -13,7 +13,6 @@ public interface RateCounterRepository extends JpaRepository<RateCounter, RateCo
     // Atomically increments the counter if the row exists, or inserts it with count=1.
     // Returns the new count after the increment.
     // ON CONFLICT means: if a row with this PK already exists, update it instead of inserting.
-    @Modifying
     @Query(value = """
         INSERT INTO rate_counters (identity, resource, tier, window_start, count)
         VALUES (:identity, :resource, :tier, :windowStart, 1)
