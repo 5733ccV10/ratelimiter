@@ -18,3 +18,10 @@ spring:
     locations: classpath:db/migration
 server:
   port: 8080
+logging:
+  structured:
+    format:
+      console: logstash
+  level:
+    root: WARN
+    com.carrera.ratelimiter: INFO

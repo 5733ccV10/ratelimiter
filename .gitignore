@@ -38,3 +38,6 @@ build/
 
 implementation-guide.md
 tdd.md
+
+### k6 binary ###
+k6.exe
