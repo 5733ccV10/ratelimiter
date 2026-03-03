@@ -1,4 +1,12 @@
 spring:
+  threads:
+    virtual:
+      enabled: true   # Java 21 virtual threads — reduces context switching under high concurrency
+  cache:
+    type: caffeine   # local in-process cache — policy lookup costs a HashMap read, not a Redis round-trip
+    cache-names: policies   # pre-creates the cache at startup so CacheMetricsRegistrar can bind it to Micrometer
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=300s,recordStats   # recordStats exposes hit/miss counters via actuator /metrics
   datasource:
     url: jdbc:postgresql://localhost:5432/ratelimiter?TimeZone=UTC
     username: ratelimiter
@@ -20,8 +28,27 @@ spring:
     redis:
       host: localhost
       port: 6379
+      lettuce:
+        pool:
+          max-active: 200   # match peak VU count — prevents requests queueing behind a full pool
+          max-idle: 50      # keep idle connections ready to avoid connection setup latency
+          min-idle: 10      # pre-warm connections on startup
+          max-wait: 100ms   # fail fast instead of queuing indefinitely
 server:
   port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches
+  endpoint:
+    health:
+      show-details: always   # show per-component status (redis, db, diskSpace)
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
 logging:
   structured:
     format:
