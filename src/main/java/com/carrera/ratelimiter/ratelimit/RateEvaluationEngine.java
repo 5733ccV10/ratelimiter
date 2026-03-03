@@ -7,9 +7,9 @@ import com.carrera.ratelimiter.policy.entity.Policy;
 import com.carrera.ratelimiter.policy.entity.Strategy;
 import com.carrera.ratelimiter.ratelimit.dto.RateLimitRequest;
 import com.carrera.ratelimiter.ratelimit.dto.RateLimitResponse;
-import com.carrera.ratelimiter.ratelimit.strategy.FixedWindowStrategy;
-import com.carrera.ratelimiter.ratelimit.strategy.SlidingWindowStrategy;
-import com.carrera.ratelimiter.ratelimit.strategy.TokenBucketStrategy;
+import com.carrera.ratelimiter.ratelimit.strategy.redisStrategies.FixedWindowRedisStrategy;
+import com.carrera.ratelimiter.ratelimit.strategy.redisStrategies.SlidingWindowRedisStrategy;
+import com.carrera.ratelimiter.ratelimit.strategy.redisStrategies.TokenBucketRedisStrategy;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,9 @@ import org.slf4j.MDC;
 public class RateEvaluationEngine {
     private static final Logger log = LoggerFactory.getLogger(RateEvaluationEngine.class);
     private final PolicyResolverService policyResolverService;
-    private final FixedWindowStrategy fixedWindowStrategy;
-    private final TokenBucketStrategy tokenBucketStrategy;
-    private final SlidingWindowStrategy slidingWindowStrategy;
+    private final FixedWindowRedisStrategy fixedWindowRedisStrategy;
+    private final TokenBucketRedisStrategy tokenBucketRedisStrategy;
+    private final SlidingWindowRedisStrategy slidingWindowRedisStrategy;
 
     public RateLimitResponse evaluate(RateLimitRequest request) {
         Optional<Policy> policy = policyResolverService.resolve(
@@ -32,30 +32,15 @@ public class RateEvaluationEngine {
         );
 
         if (policy.isEmpty()) {
-            log.info("rate.check.no_policy");
             return new RateLimitResponse(true, -1, 0L, null, null);
         }
 
         Policy p = policy.get();
-        long start = System.currentTimeMillis();
 
-        RateLimitResponse response = switch (p.getStrategy()) {
-            case FIXED_WINDOW   -> fixedWindowStrategy.check(request.getIdentity(), p);
-            case TOKEN_BUCKET   -> tokenBucketStrategy.check(request.getIdentity(), p);
-            case SLIDING_WINDOW -> slidingWindowStrategy.check(request.getIdentity(), p);
+        return switch (p.getStrategy()) {
+            case FIXED_WINDOW   -> fixedWindowRedisStrategy.check(request.getIdentity(), p);
+            case TOKEN_BUCKET   -> tokenBucketRedisStrategy.check(request.getIdentity(), p);
+            case SLIDING_WINDOW -> slidingWindowRedisStrategy.check(request.getIdentity(), p);
         };
-
-        MDC.put("identity",   request.getIdentity());
-        MDC.put("resource",   request.getResource());
-        MDC.put("strategy",   p.getStrategy().name());
-        MDC.put("policyId",   p.getId().toString());
-        MDC.put("allowed",    String.valueOf(response.getAllowed()));
-        MDC.put("remaining",  String.valueOf(response.getRemaining()));
-        MDC.put("resetAt",    String.valueOf(response.getResetAt()));
-        MDC.put("evalMs",     String.valueOf(System.currentTimeMillis() - start));
-        log.info("rate.check");
-        MDC.clear();
-
-        return response;
     }
 }

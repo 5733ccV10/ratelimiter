@@ -1,5 +1,6 @@
 package com.carrera.ratelimiter.policy.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Policy {
+public class Policy implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
