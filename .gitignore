@@ -38,6 +38,8 @@ build/
 
 implementation-guide.md
 tdd.md
-
-### k6 binary ###
+INTERVIEW_PREP.md
+### k6 binary and results ###
 k6.exe
+k6/results/
+run_benchmarks.ps1
