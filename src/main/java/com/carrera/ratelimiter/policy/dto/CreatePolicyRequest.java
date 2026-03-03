@@ -1,4 +1,7 @@
-package com.carrera.ratelimiter.policy;
+package com.carrera.ratelimiter.policy.dto;
+
+import com.carrera.ratelimiter.policy.entity.IdentityType;
+import com.carrera.ratelimiter.policy.entity.Strategy;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

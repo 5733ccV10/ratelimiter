@@ -1,7 +1,11 @@
-package com.carrera.ratelimiter.policy;
+package com.carrera.ratelimiter.policy.dto;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import com.carrera.ratelimiter.policy.entity.IdentityType;
+import com.carrera.ratelimiter.policy.entity.Policy;
+import com.carrera.ratelimiter.policy.entity.Strategy;
 
 import lombok.Data;
 
